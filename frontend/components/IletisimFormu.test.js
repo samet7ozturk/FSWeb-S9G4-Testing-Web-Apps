@@ -36,24 +36,35 @@ test("kullanıcı inputları doldurmadığında ÜÇ hata mesajı render ediliyo
   userEvent.click(submitButton);
 
   await waitFor(() => {
-    // Ad* alanındaki hata mesajını seç
     const nameError = screen.getByLabelText("Ad*").nextElementSibling;
     expect(nameError).toBeInTheDocument();
     expect(nameError).toHaveTextContent("en az 5 karakter olmalıdır.");
 
-    // Soyad* alanındaki hata mesajını seç
     const surnameError = screen.getByLabelText("Soyad*").nextElementSibling;
     expect(surnameError).toBeInTheDocument();
     expect(surnameError).toHaveTextContent("gereklidir.");
 
-    // Email* alanındaki hata mesajını seç
     const emailError = screen.getByLabelText("Email*").nextElementSibling;
     expect(emailError).toBeInTheDocument();
     expect(emailError).toHaveTextContent("geçerli bir email adresi olmalıdır.");
   });
 });
 
-test("kullanıcı doğru ad ve soyad girdiğinde ama email girmediğinde BİR hata mesajı render ediliyor.", async () => {});
+test("kullanıcı doğru ad ve soyad girdiğinde ama email girmediğinde BİR hata mesajı render ediliyor.", async () => {
+  render(<App />);
+
+  const submitButton = screen.getByText("Gönder");
+  userEvent.type(screen.getByLabelText("Ad*"), "Samet");
+  userEvent.type(screen.getByLabelText("Soyad*"), "Öztürk");
+
+  userEvent.click(submitButton);
+
+  await waitFor(() => {
+    const emailError = screen.getByLabelText("Email*").nextElementSibling;
+    expect(emailError).toBeInTheDocument();
+    expect(emailError).toHaveTextContent("geçerli bir email adresi olmalıdır.");
+  });
+});
 
 test('geçersiz bir mail girildiğinde "email geçerli bir email adresi olmalıdır." hata mesajı render ediliyor', async () => {});
 
