@@ -96,6 +96,20 @@ test('soyad girilmeden gönderilirse "soyad gereklidir." mesajı render ediliyor
   });
 });
 
-test("ad,soyad, email render ediliyor. mesaj bölümü doldurulmadığında hata mesajı render edilmiyor.", async () => {});
+test("ad,soyad, email render ediliyor. mesaj bölümü doldurulmadığında hata mesajı render edilmiyor.", async () => {
+  render(<App />);
+
+  userEvent.type(screen.getByLabelText("Ad*"), "Samet");
+  userEvent.type(screen.getByLabelText("Soyad*"), "Öztürk");
+  userEvent.type(screen.getByLabelText("Email*"), "sametozturk@gmail.com");
+
+  const submitButton = screen.getByText("Gönder");
+  userEvent.click(submitButton);
+
+  await waitFor(() => {
+    const messageError = screen.queryByLabelText("Mesaj").nextElementSibling;
+    expect(messageError).not.toBeInTheDocument();
+  });
+});
 
 test("form gönderildiğinde girilen tüm değerler render ediliyor.", async () => {});
