@@ -66,7 +66,20 @@ test("kullanıcı doğru ad ve soyad girdiğinde ama email girmediğinde BİR ha
   });
 });
 
-test('geçersiz bir mail girildiğinde "email geçerli bir email adresi olmalıdır." hata mesajı render ediliyor', async () => {});
+test('geçersiz bir mail girildiğinde "email geçerli bir email adresi olmalıdır." hata mesajı render ediliyor', async () => {
+  render(<App />);
+
+  const submitButton = screen.getByText("Gönder");
+  userEvent.type(screen.getByLabelText("Email*"), "gecersizEmail");
+
+  userEvent.click(submitButton);
+
+  await waitFor(() => {
+    const emailError = screen.getByLabelText("Email*").nextElementSibling;
+    expect(emailError).toBeInTheDocument();
+    expect(emailError).toHaveTextContent("geçerli bir email adresi olmalıdır.");
+  });
+});
 
 test('soyad girilmeden gönderilirse "soyad gereklidir." mesajı render ediliyor', async () => {});
 
