@@ -9,9 +9,25 @@ test("hata olmadan render ediliyor", () => {
   render(<App />);
 });
 
-test("iletişim formu headerı render ediliyor", () => {});
+test("iletişim formu headerı render ediliyor", () => {
+  render(<App />);
+  const formHeader = screen.getByText("Entegrasyon Test Projesi");
+  expect(formHeader).toBeInTheDocument();
+});
 
-test("kullanıcı adını 5 karakterden az girdiğinde BİR hata mesajı render ediyor.", async () => {});
+test("kullanıcı adını 5 karakterden az girdiğinde BİR hata mesajı render ediyor.", async () => {
+  render(<App />);
+
+  const usernameInput = screen.getByLabelText("Ad*");
+  userEvent.type(usernameInput, "abc");
+  userEvent.click(screen.getByText("Gönder"));
+
+  await waitFor(() => {
+    const errorMessage = screen.getByLabelText("Ad*").nextElementSibling;
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveTextContent("ad en az 5 karakter olmalıdır.");
+  });
+});
 
 test("kullanıcı inputları doldurmadığında ÜÇ hata mesajı render ediliyor.", async () => {});
 
